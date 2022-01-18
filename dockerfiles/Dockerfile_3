@@ -45,7 +45,7 @@ ARG IMAGE_VERSION
 ARG IMAGE_SOURCE_REVISION
 
 ENV SQL_USER="sqladmin" \
-    SQL_PASSWORD="changeme" \
+    SQL_PASSWORD="Changeme123@" \
     SQL_SERVER="changeme.database.windows.net" \
     SQL_DBNAME="mydrivingDB" \
     WEB_PORT=80 \
