@@ -1,0 +1,88 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: newapp
+
+---  
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-deployment
+  namespace: newapp
+  labels:
+    deploy: insurance
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insurance
+  template:
+    metadata:
+      labels:
+        app: insurance
+    spec:
+      containers:
+      - image: "registryvbn2642.azurecr.io/insurance:1.0"
+        imagePullPolicy: Always
+        name: insurance
+        ports:
+        - containerPort: 8081
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            memory: "4000Mi"
+            cpu: "100m"
+          limits:
+            memory: "6000Mi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insurance
+  namespace: newapp
+spec:
+  type: ClusterIP
+  selector:
+    app: insurance
+  ports:
+  - protocol: TCP
+    name: insurance-http
+    port: 80
+    targetPort: 8081
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  name: newapp-ingress-insurance
+  namespace: newapp
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: insurance
+          servicePort: 80
+        path: /insurance
+
+
+# ---
+# apiVersion: autoscaling.k8s.io/v1
+# kind: VerticalPodAutoscaler
+# metadata:
+#   name: vpa-newapp
+#   namespace: newapp
+# spec:
+#   targetRef:
+#     apiVersion: "apps/v1"
+#     kind:       Deployment
+#     name:       insurance-deployment
+#   updatePolicy:
+#     updateMode: "monitor"
