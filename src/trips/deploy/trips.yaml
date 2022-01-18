@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips-deployment
+  namespace: mynamespace
+  labels:
+    deploy: trips
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      labels:
+        app: trips
+    spec:
+      containers:
+      - image: "registryvmo0546.azurecr.io/tripinsights/trips:1.0"
+        imagePullPolicy: Always
+        name: trips
+        env: 
+          - name: SQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_USER
+          - name: SQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_PASSWORD
+          - name: SQL_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_SERVER
+          - name: OPENAPI_DOCS_URI
+            value: "TODO"
+        ports:
+        - containerPort: 8082
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "100m"
+          limits:
+            memory: "600Mi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips
+  namespace: mynamespace
+spec:
+  type: ClusterIP
+  selector:
+    app: trips
+  ports:
+  - protocol: TCP
+    name: trips-http
+    port: 8082
+    targetPort: 8082
+

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userprofile-deployment
+  namespace: mynamespace
+  labels:
+    deploy: userprofile
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userprofile
+  template:
+    metadata:
+      labels:
+        app: userprofile
+    spec:
+      containers:
+      - image: "registryvmo0546.azurecr.io/tripinsights/userprofile:1.0"
+        imagePullPolicy: Always
+        name: userprofile
+        env: 
+          - name: SQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_USER
+          - name: SQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_PASSWORD
+          - name: SQL_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_SERVER
+        ports:
+        - containerPort: 8083
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "100m"
+          limits:
+            memory: "600Mi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userprofile
+  namespace: mynamespace
+spec:
+  type: ClusterIP
+  selector:
+    app: userprofile
+  ports:
+  - protocol: TCP
+    name: userprofile-http
+    port: 8083
+    targetPort: 8083
+

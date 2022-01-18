@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poi-deployment
+  namespace: mynamespace
+  labels:
+    deploy: poi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poi
+  template:
+    metadata:
+      labels:
+        app: poi
+    spec:
+      containers:
+      - image: "registryvmo0546.azurecr.io/tripinsights/poi:1.0"
+        imagePullPolicy: Always
+        name: poi
+        env: 
+          - name: SQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_USER
+          - name: SQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_PASSWORD
+          - name: SQL_SERVER
+            valueFrom:
+              secretKeyRef:
+                name: mysecret
+                key: SQL_SERVER
+        ports:
+        - containerPort: 8081
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            memory: "500Mi"
+            cpu: "100m"
+          limits:
+            memory: "600Mi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poi
+  namespace: mynamespace
+spec:
+  type: ClusterIP
+  selector:
+    app: poi
+  ports:
+  - protocol: TCP
+    name: poi-http
+    port: 8081
+    targetPort: 8081
+
