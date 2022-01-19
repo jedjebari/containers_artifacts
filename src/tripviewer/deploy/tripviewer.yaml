@@ -21,9 +21,9 @@ spec:
         name: tripviewer
         env: 
           - name: TRIPS_API_ENDPOINT
-            value: trips.mynamespace.svc.cluster.local
+            value: http://trips.mynamespace.svc.cluster.local
           - name: USERPROFILE_API_ENDPOINT
-            value: userprofile.mynamespace.svc.cluster.local
+            value: http://userprofile.mynamespace.svc.cluster.local
         ports:
         - containerPort: 80
           name: http

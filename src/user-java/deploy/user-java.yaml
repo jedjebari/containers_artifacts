@@ -16,7 +16,7 @@ spec:
         app: userjava
     spec:
       containers:
-      - image: "registryvmo0546.azurecr.io/tripinsights/userjava:1.0"
+      - image: "registryvmo0546.azurecr.io/tripinsights/user-java:1.0"
         imagePullPolicy: Always
         name: userjava
         env: 
