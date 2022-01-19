@@ -36,7 +36,7 @@ spec:
                 name: mysecret
                 key: SQL_SERVER
         ports:
-        - containerPort: 8081
+        - containerPort: 80
           name: http
           protocol: TCP
         resources:
@@ -59,6 +59,6 @@ spec:
   ports:
   - protocol: TCP
     name: poi-http
-    port: 8081
-    targetPort: 8081
+    port: 80
+    targetPort: 80
 

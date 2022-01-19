@@ -21,11 +21,11 @@ spec:
         name: tripviewer
         env: 
           - name: TRIPS_API_ENDPOINT
-            value: trips.mynamespace.svc.cluster.local/8082
+            value: trips.mynamespace.svc.cluster.local
           - name: USERPROFILE_API_ENDPOINT
-            value: userprofile.mynamespace.svc.cluster.local/8083
+            value: userprofile.mynamespace.svc.cluster.local
         ports:
-        - containerPort: 8081
+        - containerPort: 80
           name: http
           protocol: TCP
         resources:
@@ -47,20 +47,7 @@ spec:
     app: tripviewer
   ports:
   - protocol: TCP
-    port: 8081
-    targetPort: 8081
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: tripviewer-ingress
-  namespace: mynamespace
-spec:
-  rules:
-  - http:
-      paths:
-      - backend:
-          serviceName: tripviewer
-          servicePort: 8081
-        path: /tripviewer
+    port: 80
+    targetPort: 80
+
 

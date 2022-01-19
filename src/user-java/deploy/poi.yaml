@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: poi-deployment
+  name: userjava-deployment
   namespace: mynamespace
   labels:
-    deploy: poi
+    deploy: userjava
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: poi
+      app: userjava
   template:
     metadata:
       labels:
-        app: poi
+        app: userjava
     spec:
       containers:
-      - image: "registryvmo0546.azurecr.io/tripinsights/poi:1.0"
+      - image: "registryvmo0546.azurecr.io/tripinsights/userjava:1.0"
         imagePullPolicy: Always
-        name: insurance
+        name: userjava
         env: 
           - name: SQL_USER
             valueFrom:
@@ -36,13 +36,29 @@ spec:
                 name: mysecret
                 key: SQL_SERVER
         ports:
-        - containerPort: 8081
+        - containerPort: 80
           name: http
           protocol: TCP
         resources:
           requests:
-            memory: "4000Mi"
+            memory: "500Mi"
             cpu: "100m"
           limits:
-            memory: "6000Mi"
+            memory: "600Mi"
             cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: userjava
+  namespace: mynamespace
+spec:
+  type: ClusterIP
+  selector:
+    app: userjava
+  ports:
+  - protocol: TCP
+    name: userjava-http
+    port: 80
+    targetPort: 80
+
