@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: tripviewer-deployment
-  namespace: mynamespace
+  namespace: web
   labels:
     deploy: tripviewer
 spec:
@@ -40,7 +40,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: tripviewer
-  namespace: mynamespace
+  namespace: web
 spec:
   type: LoadBalancer
   selector:
